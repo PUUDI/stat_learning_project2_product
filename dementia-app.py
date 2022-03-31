@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 st.markdown("""
 <style>
 .app-header {
-    font-size:50px !important;
+    font-size:50px;
     color: #F63366;
     font-weight: 700;
 }
@@ -26,6 +26,16 @@ st.markdown("""
     font-style: normal;
     font-variant: normal;
     text-transform: capitalize;
+}
+.positive {
+    color: #F63366;
+    font-size:30px;
+    font-weight: 700;  
+}
+.negative {
+    color: #008000;
+    font-size:30px;
+    font-weight: 700;  
 }
 
 </style>
@@ -69,10 +79,10 @@ else:
         
         sex = st.sidebar.selectbox('Sex',('Male','Female'))
         Age = st.sidebar.slider('Age', min_value =0,max_value =100,step =1)
-        EDUC = st.sidebar.slider('Educational Rating', min_value = 6,max_value = 23,step = 1)
+        EDUC = st.sidebar.slider('Educational Years', min_value = 6,max_value = 23,step = 1)
         SES = st.sidebar.slider('SES',min_value =1,max_value =5,step =1)
         MMSE = st.sidebar.slider('MMSE', min_value =4,max_value =30,step =1)
-        # CDR = st.sidebar.slider('CDR', min_value =0.0,max_value =2.0,step =0.5)
+        CDR = st.sidebar.slider('Time since last visit', min_value =0,max_value =30,step =1)
         eTIV = st.sidebar.slider('eTIV', min_value =1100,max_value =2010,step =1)
         nWBV = st.sidebar.slider('MMSE', min_value =0.5,max_value =0.85,step =0.01)
         ASF = st.sidebar.slider('ASF', min_value =0.875,max_value =1.6,step =0.01)
@@ -85,8 +95,8 @@ else:
                 'nWBV':nWBV,
                 'ASF':ASF}
         features = pd.DataFrame(data, index=[0])
-        return (features,sex,Age,EDUC,SES , MMSE, eTIV, nWBV, ASF)
-    input_df, sex,Age,EDUC,SES , MMSE, eTIV, nWBV, ASF = user_input_features()
+        return (features,sex,Age,EDUC,SES , MMSE, eTIV, nWBV, ASF, CDR)
+    input_df, sex,Age,EDUC,SES , MMSE, eTIV, nWBV, ASF, CDR = user_input_features()
  
 
 input_df['M/F'] = input_df['M/F'].apply(lambda x: ['Male', 'Female'].index(x))
@@ -101,25 +111,26 @@ st.subheader('Predictor variables')
 
     # st.write('Predictor variables')
     # st.write(input_df)
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5 = st.columns(5)
     
 col1.metric("Sex", sex)
 col2.metric("Age", Age)
 col3.metric("Edcation", EDUC)
 col4.metric("Social Status", SES)
-    
-col5, col6, col7, col8 = st.columns(4)
+col5.metric("Time since last visit", CDR)
 
-col5.metric("MMSE", MMSE)
-col6.metric("eTIV", eTIV)
-col7.metric("Brain volume", nWBV)
-col8.metric("ASF", ASF)
+col6, col7, col8, col9, col10= st.columns(5)
+
+col6.metric("MMSE", MMSE)
+col7.metric("eTIV", eTIV)
+col8.metric("Brain volume", nWBV)
+col9.metric("ASF", ASF)
 
 
 st.markdown("""---""")
 
 # Reads in saved classification model
-load_clf = pickle.load(open('penguins_clf.pkl', 'rb'))
+load_clf = pickle.load(open('dementia_clf.pkl', 'rb'))
 
 # Apply model to make predictions
 prediction = load_clf.predict(input_df)
@@ -132,16 +143,22 @@ c1 = col1.container()
 c2 = col2.container()
 
 
+url = "https://nimh.health.gov.lk/en/"
+# st.write("National Institute of Mental Health [link](%s)" % url)
 
+# st.markdown("check out this [link](%s)" % url)
 
 c1.subheader('Prediction')
 penguins_species = np.array(['Negative','Positive'])
 if prediction[0] == 0:
-    status = 'The Patient is Negative'
+    
+    c1.markdown('<p class="negative">The Patient is Negative</p>', unsafe_allow_html=True)
 else:
-    status = 'The Patient is positive with Dementia'
+   
+    c1.markdown('<p class="positive">The Patient is Positive with Dementia</p>' , unsafe_allow_html=True)
+    c1.write("[National Institute of Mental Health](%s)" % url)
 
-c1.subheader(status)
+
 
 
 c2.subheader('Prediction Probability')

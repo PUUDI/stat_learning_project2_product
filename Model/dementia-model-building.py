@@ -1,5 +1,5 @@
 import pandas as pd
-# penguins = pd.read_csv('penguins_cleaned.csv')
+
 dataset = pd.read_csv('https://gist.githubusercontent.com/PUUDI/861771ffca8462507b487b6f75f2386d/raw/44e4760f1f6ee628c9674fe1c87e63bd4fbcf19d/gistfile1.txt')
 classes = ['Nondemented', 'Demented']
 
