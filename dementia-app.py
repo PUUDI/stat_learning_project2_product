@@ -82,7 +82,7 @@ else:
         EDUC = st.sidebar.slider('Educational Years', min_value = 6,max_value = 23,step = 1)
         SES = st.sidebar.slider('SES',min_value =1,max_value =5,step =1)
         MMSE = st.sidebar.slider('MMSE', min_value =4,max_value =30,step =1)
-        CDR = st.sidebar.slider('Time since last visit(days)', min_value =0,max_value =30,step =1)
+        CDR = st.sidebar.slider('Time since last visit (days)', min_value =0,max_value =30,step =1)
         eTIV = st.sidebar.slider('eTIV', min_value =1100,max_value =2010,step =1)
         nWBV = st.sidebar.slider('nWBV', min_value =0.5,max_value =0.85,step =0.01)
         ASF = st.sidebar.slider('ASF', min_value =0.875,max_value =1.6,step =0.01)
